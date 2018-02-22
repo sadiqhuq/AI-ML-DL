@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 
 def simple_linear_regression(x, y):
     """
-    Find the slope and intercept using mean and covariance
+    Find the slope and intercept using
+    mean(x), mean(y), covar(x,y), var(x)
     https://en.wikipedia.org/wiki/Simple_linear_regression#Numerical_example
     """
     # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
