@@ -1,2 +1,9 @@
-# AI-ML-DL
-Machine Learning /scratch
+### Machine Learning /scratch
+
+* Artificial Intelligence
+  * Machine Learning
+    * Deep Learning
+
+### Tree
+* snack
+  * Linear Regression
