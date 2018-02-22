@@ -16,10 +16,13 @@ def simple_linear_regression(x, y):
     Find the slope and intercept using mean and covariance
     https://en.wikipedia.org/wiki/Simple_linear_regression#Numerical_example
     """
-    m = 0
-    b = 0
-    c = 0
-      
+    # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
+    norm = 0
+    
+    covariance = np.cov(xt,yt,ddof=norm)
+    
+    m = covariance [0,1] / np.var(xt,ddof=norm)
+    b = np.mean(yt) - m * np.mean(xt)
 
     return m, b
 
