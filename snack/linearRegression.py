@@ -49,6 +49,8 @@ def abline (m, b, xt):
 filename = '../datasets/UCI/iris/iris.data'
 
 df = pd.read_csv(filename,sep=',')
+mapping = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
+df =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
 
 # dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
 dataset = df.values
