@@ -7,7 +7,6 @@ y(x) = y(x|m,b) = mx + b
 
 """
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -34,6 +33,11 @@ def least_squares_regression(x, y):
       
     return m, b, c
 
+
+def abline (m, b, xt):
+    """ Generate straight line to plot """
+    return [m * i + b for i in xt]
+
 # dataset = np.loadtxt ('data.txt', delimiter='\t', dtype=('i4','f4'), skiprows=11)
 
 dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
@@ -42,17 +46,12 @@ dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
 xt = dataset[:,0]
 yt = dataset[:,1]
 
-m_s, b_s = simple_linear_regression (xt, yt)
+m_s, b_s   = simple_linear_regression (xt, yt)
+m_l, b_l,c = least_squares_regression (xt, yt)
 
-plt.plot(xt,yt,c='k',marker='o',ls='')
-
-m,b,c = least_squares_regression(xt,yt)
-
-abline =  [m_s * i + b_s for i in xt]
-plt.plot(xt,abline,'b', label='simple')
-
-abline =  [m * i + b for i in xt]
-plt.plot(xt,abline,'r', label='least square')
+plt.plot(xt,yt                  ,c='k', label='sample', marker='o',ls='')
+plt.plot(xt,abline(m_s, b_s, xt),c='b', label='simple')
+plt.plot(xt,abline(m_l, b_l, xt),c='r', label='least square')
 
 plt.legend(loc=0)
 
