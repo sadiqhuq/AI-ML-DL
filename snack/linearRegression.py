@@ -50,18 +50,26 @@ filename = '../datasets/UCI/iris/iris.data'
 
 df       = pd.read_csv(filename,sep=',')
 
+# Attribute Information:
+# 0. sepal length in cm
+# 1. sepal width in cm
+# 2. petal length in cm
+# 3. petal width in cm
+# 4. class: 
+#    0 - Iris Setosa
+#    1 - Iris Versicolour
+#    2 - Iris Virginica
+
 # Map label to integer
 
 mapping  = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
 df       =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
 df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
 
-
-# dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
 dataset = df.values
 
 xt = dataset[:,0]
-yt = dataset[:,1]
+yt = dataset[:,2]
 
 m_s, b_s   = simple_linear_regression (xt, yt)
 m_l, b_l,c = least_squares_regression (xt, yt)
