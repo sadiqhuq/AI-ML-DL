@@ -11,6 +11,7 @@ y(x) = y(x|m,b) = mx + b
 """
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 def simple_linear_regression(x, y):
@@ -44,10 +45,13 @@ def abline (m, b, xt):
 
     return [m * i + b for i in xt]
 
-# dataset = np.loadtxt ('data.txt', delimiter='\t', dtype=('i4','f4'), skiprows=11)
 
-dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
+filename = '../datasets/UCI/iris/iris.data'
 
+df = pd.read_csv(filename,sep=',')
+
+# dataset = np.array([[0,1],[1,0],[2,2],[4,3]])
+dataset = df.values
 
 xt = dataset[:,0]
 yt = dataset[:,1]
