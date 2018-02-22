@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
-""" Reference: Numerical Recipies (2007)
+""" 
+Sadiq Huq, Karlsruhe Institute of Technology
+
+Reference: Numerical Recipies (2007)
 
 Fitting Data to a Straight Line 
 y(x) = y(x|m,b) = mx + b
@@ -27,6 +30,7 @@ def simple_linear_regression(x, y):
 
 def least_squares_regression(x, y):
     """ General Linear Least Squares """
+
     m = 0
     b = 0
     c = 0
@@ -36,6 +40,7 @@ def least_squares_regression(x, y):
 
 def abline (m, b, xt):
     """ Generate straight line to plot """
+
     return [m * i + b for i in xt]
 
 # dataset = np.loadtxt ('data.txt', delimiter='\t', dtype=('i4','f4'), skiprows=11)
