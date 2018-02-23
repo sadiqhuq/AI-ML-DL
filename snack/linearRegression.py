@@ -10,14 +10,17 @@ y(x) = y(x|m,b) = mx + b
 
 Machine Learning Notation
 h_theta(x_i) = theta_0 + theta_1 * x_i
+
 h: hypothesis that maps x => y
 m: training examples
-theta_0: independent variable
-theta_1: dependent variable / label / valu
+x: independent variable
+y: dependent variable / label / target value
+co-efficient: theta_0 (intercept), theta_1 (slope)
+Minimize  half the function: h_theta (x_i) - y_i
+avergaed MSE/2: cost function J(theta_0, theta_1):
+0.5 * m * sum(h_theta (x_i) - y_i )^2
 
-Minimize this function: h_theta (x_i) - y_i 
-avergaed SSE/2: 
-1/2m 
+minmize theta_0, theta_1 for J(thet_0, Theta_1)
 
 """
 
