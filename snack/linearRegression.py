@@ -102,11 +102,15 @@ test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, m_s, b_s)
 
 
-plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
+# plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
+colors = ['cyan','magenta','yellow']
+import matplotlib
+plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
+
 plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
 plt.plot(xt,abline(xt, m_l, b_l),c='r', label='least square train')
 
-plt.plot(test_SepalLength,test_PetalWidth,c='m',    label='test data', marker='s',ls='--', )
+plt.plot(test_SepalLength,test_PetalWidth,c='orange',    label='test data', marker='s',ls='--', )
 plt.plot(test_SepalLength,predict_PetalWidth,c='g', label='precit simple', marker='d')
 
 plt.legend(loc=0)
