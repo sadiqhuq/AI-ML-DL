@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 """ 
 Sadiq Huq, Karlsruhe Institute of Technology
@@ -48,13 +48,14 @@ def abline (xt, m, b):
 def predict (xtest, ytest, m, b):
     ypredict = abline (xtest, m, b)
 
-    # R-squared
+    # Co-efficient of determination - R-squared
     SSR  = np.sum ( ( ypredict - np.mean(ytest) )**2 )
     SSE  = np.sum ( ( ytest    - ypredict       )**2 )
     SSTO = np.sum ( ( ytest    - np.mean(ytest) )**2 )
 
     r_squared = SSR / SSTO
-    print r_squared, 1 - SSE / SSTO
+
+    print ( 'SSR / SSTO' , r_squared, '1 - SSE / SSTO', 1 - SSE / SSTO )
      
 #   for i in range(0,len(ytest)):
 #       err_sum = print ytest[i], ypredict[i]
@@ -110,8 +111,8 @@ plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors
 plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
 plt.plot(xt,abline(xt, m_l, b_l),c='r', label='least square train')
 
-plt.plot(test_SepalLength,test_PetalWidth,c='orange',    label='test data', marker='s',ls='--', )
-plt.plot(test_SepalLength,predict_PetalWidth,c='g', label='precit simple', marker='d')
+plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
+plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
 
 plt.legend(loc=0)
 
