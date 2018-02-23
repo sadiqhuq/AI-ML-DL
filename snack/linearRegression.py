@@ -36,11 +36,15 @@ def simple_linear_regression(x, y):
     return m, b
 
 def gradient_descent_regression(x, y):
+    niters    = 100
+    learnrate = 0.001
+
+    N = y.size
 
     m = 0
     b = 0
     c = 0
-      
+
     return m, b, c
 
 
@@ -66,59 +70,62 @@ def predict (xtest, ytest, m, b):
 
     return ypredict
 
+def run():
+    filename = '../datasets/UCI/iris/iris.data'
 
-filename = '../datasets/UCI/iris/iris.data'
+    df       = pd.read_csv(filename,sep=',')
 
-df       = pd.read_csv(filename,sep=',')
+    # Attribute Information:
+    # 0. sepal length in cm
+    # 1. sepal width in cm
+    # 2. petal length in cm
+    # 3. petal width in cm
+    # 4. class:
+    #    0 - Iris Setosa
+    #    1 - Iris Versicolour
+    #    2 - Iris Virginica
 
-# Attribute Information:
-# 0. sepal length in cm
-# 1. sepal width in cm
-# 2. petal length in cm
-# 3. petal width in cm
-# 4. class: 
-#    0 - Iris Setosa
-#    1 - Iris Versicolour
-#    2 - Iris Virginica
+    # Map label to integer
 
-# Map label to integer
+    mapping  = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
+    df       =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
+    df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
 
-mapping  = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
-df       =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
-df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
+    dataset = df.values
 
-dataset = df.values
+    xt = dataset[:,0]  # Sepal Length
+    yt = dataset[:,3]  # petal Width
 
-xt = dataset[:,0]  # Sepal Length
-yt = dataset[:,3]  # petal Width
+    # Train
 
-# Train
+    m_s, b_s    = simple_linear_regression    (xt, yt)
+    m_g, b_g, c = gradient_descent_regression (xt, yt)
 
-m_s, b_s    = simple_linear_regression    (xt, yt)
-m_g, b_g, c = gradient_descent_regression (xt, yt)
+    # Test
 
-# Test
+    test_SepalLength  = np.array([5.1, 5.9, 6.9])
+    test_SepalWidth   = np.array([3.3, 3.0, 3.1])
+    test_PetalLength  = np.array([1.7, 4.2, 5.4])
+    test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 
-test_SepalLength  = np.array([5.1, 5.9, 6.9])
-test_SepalWidth   = np.array([3.3, 3.0, 3.1])
-test_PetalLength  = np.array([1.7, 4.2, 5.4])
-test_PetalWidth   = np.array([0.5, 1.5, 2.1])
-
-# Given Sepal Length predict Petal Width
-predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, m_s, b_s)
+    # Given Sepal Length predict Petal Width
+    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, m_s, b_s)
 
 
-# plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
-colors = ['cyan','magenta','yellow']
-import matplotlib
-plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
+    # plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
+    colors = ['cyan','magenta','yellow']
+    import matplotlib
+    plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
 
-plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
-plt.plot(xt,abline(xt, m_g, b_g),c='r', label='least square train')
+    plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
+    plt.plot(xt,abline(xt, m_g, b_g),c='r', label='least square train')
 
-plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
-plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
+    plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
+    plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
 
-plt.legend(loc=0)
+    plt.legend(loc=0)
 
-plt.show()
+    plt.show()
+
+if __name__ == '__main__':
+   run()
