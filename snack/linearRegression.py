@@ -94,8 +94,8 @@ yt = dataset[:,3]  # petal Width
 
 # Train
 
-m_s, b_s   = simple_linear_regression (xt, yt)
-m_l, b_l,c = least_squares_regression (xt, yt)
+m_s, b_s    = simple_linear_regression    (xt, yt)
+m_g, b_g, c = gradient_descent_regression (xt, yt)
 
 # Test
 
@@ -114,7 +114,7 @@ import matplotlib
 plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
 
 plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
-plt.plot(xt,abline(xt, m_l, b_l),c='r', label='least square train')
+plt.plot(xt,abline(xt, m_g, b_g),c='r', label='least square train')
 
 plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
 plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
