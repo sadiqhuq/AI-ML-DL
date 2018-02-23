@@ -4,6 +4,7 @@
 Sadiq Huq, Karlsruhe Institute of Technology
 
 Reference: Numerical Recipies (2007)
+Andrew Ng, Stanford - Coursera
 
 Fitting Data to a Straight Line 
 y(x) = y(x|m,b) = mx + b
@@ -20,7 +21,7 @@ Minimize  half the function: h_theta (x_i) - y_i
 avergaed MSE/2: cost function J(theta_0, theta_1):
 0.5 * m * sum(h_theta (x_i) - y_i )^2
 
-minmize theta_0, theta_1 for J(thet_0, Theta_1)
+Goal: minmize J(thet_0, Theta_1)
 
 """
 
@@ -41,7 +42,8 @@ def simple_linear_regression(x, y):
     
     covar = np.cov(x,y,ddof=norm)
  
-    theta_1 = covar [0,1] / np.var(x,ddof=norm)
+    # theta_1 = covar [0,1] / np.var(x,ddof=norm)
+    theta_1 = covar [0,1] / covar[0,0]
     theta_0 = np.mean(y) - ( theta_1 * np.mean(x) )
 
     # The propotion of SSyy (covar[1,1]) acounted for by the regresion
@@ -61,13 +63,13 @@ def gradient_descent_regression(x, y):
 
     return theta_0, theta_1, cost
 
-def abline (xt, m, b):
+def abline (xt, theta_0, theta_1):
     """ Generate discrete straight line to plot """
 
-    return [m * i + b for i in xt]
+    return [theta_0 + theta_1*i for i in xt]
 
-def predict (xtest, ytest, m, b):
-    ypredict = abline (xtest, m, b)
+def predict (xtest, ytest, theta_0, theta_1):
+    ypredict = abline (xtest, theta_0, theta_1)
 
     # Co-efficient of determination - R-squared
     SSR  = np.sum ( ( ypredict - np.mean(ytest) )**2 )
@@ -129,7 +131,7 @@ def run():
     test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 
     # Given Sepal Length predict Petal Width
-    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_1_s, theta_0_s)
+    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
 
 
     # plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
@@ -137,11 +139,11 @@ def run():
     import matplotlib
     plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
 
-    plt.plot(xt,abline(xt, theta_1_s, theta_0_s),c='b', label='simple train')
-    plt.plot(xt,abline(xt, theta_1_g, theta_0_g),c='r', label='least square train')
+    plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b', label='simple train')
+    plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r', label='least square train')
 
     plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
-    plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
+    plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='predict simple', marker='d', ls='')
 
     plt.legend(loc=0)
 
