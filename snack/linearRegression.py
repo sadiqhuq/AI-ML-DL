@@ -8,6 +8,17 @@ Reference: Numerical Recipies (2007)
 Fitting Data to a Straight Line 
 y(x) = y(x|m,b) = mx + b
 
+Machine Learning Notation
+h_theta(x_i) = theta_0 + theta_1 * x_i
+h: hypothesis that maps x => y
+m: training examples
+theta_0: independent variable
+theta_1: dependent variable / label / valu
+
+Minimize this function: h_theta (x_i) - y_i 
+avergaed SSE/2: 
+1/2m 
+
 """
 
 import numpy as np
@@ -27,13 +38,13 @@ def simple_linear_regression(x, y):
     
     covar = np.cov(x,y,ddof=norm)
  
-    m = covar [0,1] / np.var(x,ddof=norm)
-    b = np.mean(y) - ( m * np.mean(x) )
+    theta_1 = covar [0,1] / np.var(x,ddof=norm)
+    theta_0 = np.mean(y) - ( theta_1 * np.mean(x) )
 
     # The propotion of SSyy (covar[1,1]) acounted for by the regresion
     print ( 'r-squared:', covar[0,1]**2 / ( covar[0,0]*covar[1,1] ) )
 
-    return m, b
+    return theta_0, theta_1, 0
 
 def gradient_descent_regression(x, y):
     niters    = 100
@@ -41,12 +52,11 @@ def gradient_descent_regression(x, y):
 
     N = y.size
 
-    m = 0
-    b = 0
-    c = 0
+    theta_0 = 0
+    theta_1 = 0
+    cost    = 0
 
-    return m, b, c
-
+    return theta_0, theta_1, cost
 
 def abline (xt, m, b):
     """ Generate discrete straight line to plot """
@@ -105,8 +115,8 @@ def run():
 
     # Train
 
-    m_s, b_s    = simple_linear_regression    (xt, yt)
-    m_g, b_g, c = gradient_descent_regression (xt, yt)
+    theta_0_s, theta_1_s, cost = simple_linear_regression    (xt, yt)
+    theta_0_g, theta_1_g, cost = gradient_descent_regression (xt, yt)
 
     # Test
 
@@ -116,7 +126,7 @@ def run():
     test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 
     # Given Sepal Length predict Petal Width
-    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, m_s, b_s)
+    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_1_s, theta_0_s)
 
 
     # plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
@@ -124,8 +134,8 @@ def run():
     import matplotlib
     plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
 
-    plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
-    plt.plot(xt,abline(xt, m_g, b_g),c='r', label='least square train')
+    plt.plot(xt,abline(xt, theta_1_s, theta_0_s),c='b', label='simple train')
+    plt.plot(xt,abline(xt, theta_1_g, theta_0_g),c='r', label='least square train')
 
     plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
     plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='precit simple', marker='d', ls='')
