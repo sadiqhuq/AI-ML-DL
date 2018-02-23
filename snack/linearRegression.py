@@ -25,10 +25,10 @@ def simple_linear_regression(x, y):
     # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
     norm = 0
     
-    covar = np.cov(xt,yt,ddof=norm)
+    covar = np.cov(x,y,ddof=norm)
  
-    m = covar [0,1] / np.var(xt,ddof=norm)
-    b = np.mean(yt) - ( m * np.mean(xt) )
+    m = covar [0,1] / np.var(x,ddof=norm)
+    b = np.mean(y) - ( m * np.mean(x) )
 
     # The propotion of SSyy (covar[1,1]) acounted for by the regresion
     print ( 'r-squared:', covar[0,1]**2 / ( covar[0,0]*covar[1,1] ) )
@@ -89,7 +89,14 @@ def run():
 
     mapping  = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
     df       =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
-    df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
+
+    # Label string to int
+    # df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
+
+    # # Scatter plot of the dataframe
+    # multi = pd.plotting.scatter_matrix(df, c=df.iloc[:, 4], figsize=(15, 15), marker='o',
+    #                            hist_kwds={'bins': 20}, s=60, alpha=.8)
+
 
     dataset = df.values
 
