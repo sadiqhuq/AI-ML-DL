@@ -10,4 +10,5 @@
 
 * snack
   * Linear Regression
+    * Least Squares, Gradient Descent
 
