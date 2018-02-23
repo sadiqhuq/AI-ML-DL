@@ -16,22 +16,26 @@ import matplotlib.pyplot as plt
 
 def simple_linear_regression(x, y):
     """
+    General Linear Least Squares
     Find the slope and intercept using
     mean(x), mean(y), covar(x,y), var(x)
     https://en.wikipedia.org/wiki/Simple_linear_regression#Numerical_example
+    http://mathworld.wolfram.com/LeastSquaresFitting.html
     """
     # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
     norm = 0
     
-    covariance = np.cov(xt,yt,ddof=norm)
+    covar = np.cov(xt,yt,ddof=norm)
  
-    m = covariance [0,1] / np.var(xt,ddof=norm)
-    b = np.mean(yt) - m * np.mean(xt)
+    m = covar [0,1] / np.var(xt,ddof=norm)
+    b = np.mean(yt) - ( m * np.mean(xt) )
+
+    # The propotion of SSyy (covar[1,1]) acounted for by the regresion
+    print ( 'r-squared:', covar[0,1]**2 / ( covar[0,0]*covar[1,1] ) )
 
     return m, b
 
-def least_squares_regression(x, y):
-    """ General Linear Least Squares """
+def gradient_descent_regression(x, y):
 
     m = 0
     b = 0
@@ -41,7 +45,7 @@ def least_squares_regression(x, y):
 
 
 def abline (xt, m, b):
-    """ Generate straight line to plot """
+    """ Generate discrete straight line to plot """
 
     return [m * i + b for i in xt]
 
@@ -55,10 +59,11 @@ def predict (xtest, ytest, m, b):
 
     r_squared = SSR / SSTO
 
-    print ( 'SSR / SSTO' , r_squared, '1 - SSE / SSTO', 1 - SSE / SSTO )
+    print ( 'SSR / SSTO: ' , r_squared, '1 - SSE / SSTO: ', 1 - SSE / SSTO )
      
-#   for i in range(0,len(ytest)):
-#       err_sum = print ytest[i], ypredict[i]
+    RMSE = np.sqrt ( SSE / len(ytest) )
+    print ( 'RMSE: ', RMSE )
+
     return ypredict
 
 
