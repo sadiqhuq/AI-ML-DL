@@ -3,8 +3,9 @@
 """ 
 Sadiq Huq, Karlsruhe Institute of Technology
 
-Reference: Numerical Recipies (2007)
+References:
 Andrew Ng, Stanford - Coursera
+Numerical Recipies (2007)
 
 Fitting Data to a Straight Line 
 y(x) = y(x|m,b) = mx + b
