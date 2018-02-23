@@ -24,7 +24,7 @@ def simple_linear_regression(x, y):
     norm = 0
     
     covariance = np.cov(xt,yt,ddof=norm)
-    
+ 
     m = covariance [0,1] / np.var(xt,ddof=norm)
     b = np.mean(yt) - m * np.mean(xt)
 
@@ -40,10 +40,25 @@ def least_squares_regression(x, y):
     return m, b, c
 
 
-def abline (m, b, xt):
+def abline (xt, m, b):
     """ Generate straight line to plot """
 
     return [m * i + b for i in xt]
+
+def predict (xtest, ytest, m, b):
+    ypredict = abline (xtest, m, b)
+
+    # R-squared
+    SSR  = np.sum ( ( ypredict - np.mean(ytest) )**2 )
+    SSE  = np.sum ( ( ytest    - ypredict       )**2 )
+    SSTO = np.sum ( ( ytest    - np.mean(ytest) )**2 )
+
+    r_squared = SSR / SSTO
+    print r_squared, 1 - SSE / SSTO
+     
+#   for i in range(0,len(ytest)):
+#       err_sum = print ytest[i], ypredict[i]
+    return ypredict
 
 
 filename = '../datasets/UCI/iris/iris.data'
@@ -68,15 +83,31 @@ df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
 
 dataset = df.values
 
-xt = dataset[:,0]
-yt = dataset[:,2]
+xt = dataset[:,0]  # Sepal Length
+yt = dataset[:,3]  # petal Width
+
+# Train
 
 m_s, b_s   = simple_linear_regression (xt, yt)
 m_l, b_l,c = least_squares_regression (xt, yt)
 
-plt.plot(xt,yt                  ,c='k', label='sample', marker='o',ls='')
-plt.plot(xt,abline(m_s, b_s, xt),c='b', label='simple')
-plt.plot(xt,abline(m_l, b_l, xt),c='r', label='least square')
+# Test
+
+test_SepalLength  = np.array([5.1, 5.9, 6.9])
+test_SepalWidth   = np.array([3.3, 3.0, 3.1])
+test_PetalLength  = np.array([1.7, 4.2, 5.4])
+test_PetalWidth   = np.array([0.5, 1.5, 2.1])
+
+# Given Sepal Length predict Petal Width
+predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, m_s, b_s)
+
+
+plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
+plt.plot(xt,abline(xt, m_s, b_s),c='b', label='simple train')
+plt.plot(xt,abline(xt, m_l, b_l),c='r', label='least square train')
+
+plt.plot(test_SepalLength,test_PetalWidth,c='m',    label='test data', marker='s',ls='--', )
+plt.plot(test_SepalLength,predict_PetalWidth,c='g', label='precit simple', marker='d')
 
 plt.legend(loc=0)
 
