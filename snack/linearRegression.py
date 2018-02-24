@@ -38,6 +38,9 @@ def simple_linear_regression(x, y):
     mean(x), mean(y), covar(x,y), var(x)
     https://en.wikipedia.org/wiki/Simple_linear_regression#Numerical_example
     http://mathworld.wolfram.com/LeastSquaresFitting.html
+    theta_1 = SSxy / SSxx ; SS is the covariance matrix
+    theta_0 = ybar - theta_1 * xbar
+
     """
     # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
     norm = 0
@@ -99,6 +102,7 @@ def predict (xtest, ytest, theta_0, theta_1):
     """
     Use the train co-efficient to predict test data y
     Report error measures
+    https://onlinecourses.science.psu.edu/stat501/node/255
     """
 
     ypredict = abline (xtest, theta_0, theta_1)
