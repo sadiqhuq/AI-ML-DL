@@ -111,70 +111,80 @@ def predict (xtest, ytest, theta_0, theta_1):
 
     return ypredict
 
-def run():
-    filename = '../datasets/kaggle/Iris/input/Iris.csv'
+# def run():
+# filename = '../datasets/UCI/iris/iris.data'
 
-    df       = pd.read_csv(filename,sep=',')
+filename = '../datasets/kaggle/iris-species/Iris.csv'
 
-    # Attribute Information:
-    # 0. row number
-    # 1. sepal length in cm
-    # 2. sepal width in cm
-    # 3. petal length in cm
-    # 4. petal width in cm
-    # 5. class:
-    #    0 - Iris Setosa
-    #    1 - Iris Versicolour
-    #    2 - Iris Virginica
+df       = pd.read_csv(filename,sep=',')
 
-    # Map label to integer
+# Attribute Information:
+# 0. row number
+# 1. sepal length in cm
+# 2. sepal width in cm
+# 3. petal length in cm
+# 4. petal width in cm
+# 5. class:
+#    0 - Iris Setosa
+#    1 - Iris Versicolour
+#    2 - Iris Virginica
 
-    mapping  = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
-    df       =  df.replace({'Iris-setosa':mapping,'Iris-versicolor':mapping, 'Iris-virginica':mapping})
+# Map label to integer
+labelcolors  = pd.factorize(df.Species)[0]
 
-    # Label string to int
-    # df.iloc[:, 4] = df.iloc[:, 4].apply(pd.to_numeric)
+# Scatter plot of the dataframe
 
-    # # Scatter plot of the dataframe
-    # multi = pd.plotting.scatter_matrix(df, c=df.iloc[:, 4], figsize=(15, 15), marker='o',
-    #                            hist_kwds={'bins': 20}, s=60, alpha=.8)
+plt.figure( 1 )
+multi = pd.plotting.scatter_matrix(df, c=labelcolors, figsize=(15, 15), marker='o',
+                            hist_kwds={'bins': 20}, s=60, alpha=.8)
 
-    dataset = df.values
-    
-    xt = dataset[:,1]  # Sepal Length
-    yt = dataset[:,4]  # Petal Width
-    
-    # Train
-    
-    theta_0_s, theta_1_s, cost = simple_linear_regression    (xt, yt)
-    theta_0_g, theta_1_g, cost = gradient_descent_regression (xt, yt)
-    
-    # Test
-    
-    test_SepalLength  = np.array([5.1, 5.9, 6.9])
-    test_SepalWidth   = np.array([3.3, 3.0, 3.1])
-    test_PetalLength  = np.array([1.7, 4.2, 5.4])
-    test_PetalWidth   = np.array([0.5, 1.5, 2.1])
-    
-    # Given Sepal Length predict Petal Width
-    predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
-    
-    
-    colors = ['gold','brown','orange']
-    plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
-    # plt.plot(xt, yt , c='k', label='training data', marker='o',ls='')
-    
-    plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b',     label='train least squares')
-    # plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r',     label='train gradient descent')
-    
-    plt.plot(test_SepalLength,test_PetalWidth,c='g',        label='test data',             marker='s', ls='--')
-    plt.plot(test_SepalLength,predict_PetalWidth,c='magenta',label='predict least squares', marker='d', ls='')
-    
-    plt.legend(loc=0)
-    plt.xlabel('Sepal Length')
-    plt.ylabel('Petal Width')
-    
-    plt.show()
 
-if __name__ == '__main__':
-   run()
+# fignum = plt.gcf().number + 1
+# plt.figure ( fignum ) 
+# pd.plotting.parallel_coordinates( df.drop(['Id'], axis=1),'Species')
+
+
+# dataset = df.values
+# xt = dataset[:,1]  # Sepal Length
+# yt = dataset[:,4]  # Petal Width
+
+xt = df.SepalLengthCm.values
+yt = df.PetalWidthCm.values
+
+# Train
+
+theta_0_s, theta_1_s, cost = simple_linear_regression    (xt, yt)
+theta_0_g, theta_1_g, cost = gradient_descent_regression (xt, yt)
+
+# Test
+
+test_SepalLength  = np.array([5.1, 5.9, 6.9])
+test_SepalWidth   = np.array([3.3, 3.0, 3.1])
+test_PetalLength  = np.array([1.7, 4.2, 5.4])
+test_PetalWidth   = np.array([0.5, 1.5, 2.1])
+
+# Given Sepal Length predict Petal Width
+predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
+
+
+fignum = plt.gcf().number + 1
+plt.figure ( fignum ) 
+
+colors = ['gold','brown','orange']
+plt.scatter(xt, yt, c=df.PetalWidthCm, cmap=matplotlib.colors.ListedColormap(colors))
+# plt.plot(xt, yt , c='k', label='training data', marker='o',ls='')
+
+plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b',     label='train least squares')
+# plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r',     label='train gradient descent')
+
+plt.plot(test_SepalLength,test_PetalWidth,c='g',        label='test data',             marker='s', ls='--')
+plt.plot(test_SepalLength,predict_PetalWidth,c='magenta',label='predict least squares', marker='d', ls='')
+
+plt.legend(loc=0)
+plt.xlabel('Sepal Length')
+plt.ylabel('Petal Width')
+
+plt.show()
+
+# if __name__ == '__main__':
+#    run()
