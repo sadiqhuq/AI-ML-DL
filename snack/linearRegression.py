@@ -48,6 +48,9 @@ def simple_linear_regression(x, y):
     theta_1 = covar [0,1] / covar[0,0]
     theta_0 = np.mean(y) - ( theta_1 * np.mean(x) )
 
+    # fit = 'y = ' +  "{:.1f}".format(theta_0) + ' + '  + "{:.1f}".format(theta_1) + ' x'
+    # print ( '\nLeast Squares Fit: ' + fit + '\n' )
+
     # The propotion of SSyy (covar[1,1]) acounted for by the regresion
     print ( 'r-squared:', covar[0,1]**2 / ( covar[0,0]*covar[1,1] ) )
 
@@ -81,6 +84,9 @@ def gradient_descent_regression(x, y):
     theta_0   = 0
     theta_1   = 0
     cost      = 0
+
+    # fit = 'y = ' +  "{:.1f}".format(theta_0) + ' + '  + "{:.1f}".format(theta_1) + ' x'
+    # print ( '\nGradient Descent Fit: ' + fit + '\n' )
 
     return theta_0, theta_1, cost
 
@@ -156,6 +162,9 @@ yt = df.PetalWidthCm.values
 theta_0_s, theta_1_s, cost = simple_linear_regression    (xt, yt)
 theta_0_g, theta_1_g, cost = gradient_descent_regression (xt, yt)
 
+fit_s = 'y = ' +  "{:.2f}".format(theta_0_s) + ' + '  + "{:.2f}".format(theta_1_s) + ' x'
+fit_g = 'y = ' +  "{:.2f}".format(theta_0_g) + ' + '  + "{:.2f}".format(theta_1_g) + ' x'
+
 # Test
 
 test_SepalLength  = np.array([5.1, 5.9, 6.9])
@@ -164,7 +173,8 @@ test_PetalLength  = np.array([1.7, 4.2, 5.4])
 test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 
 # Given Sepal Length predict Petal Width
-predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
+print ('Predict with least squares fit: ')
+predict_PetalWidth_s = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
 
 
 fignum = plt.gcf().number + 1
@@ -177,10 +187,13 @@ plt.scatter(xt, yt, c=df.PetalWidthCm, cmap=matplotlib.colors.ListedColormap(col
 plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b',     label='train least squares')
 # plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r',     label='train gradient descent')
 
-plt.plot(test_SepalLength,test_PetalWidth,c='g',        label='test data',             marker='s', ls='--')
-plt.plot(test_SepalLength,predict_PetalWidth,c='magenta',label='predict least squares', marker='d', ls='')
+plt.plot(test_SepalLength,test_PetalWidth,c='g',           label='test data',             marker='s', ls='--')
+plt.plot(test_SepalLength,predict_PetalWidth_s,c='magenta',label='predict least squares', marker='d', ls='')
 
-plt.legend(loc=0)
+plt.gcf().text(0.15, 0.85, fit_s, fontsize=12, color='b')
+plt.gcf().text(0.15, 0.80, fit_g, fontsize=12, color='r')
+
+plt.legend(loc=4)
 plt.xlabel('Sepal Length')
 plt.ylabel('Petal Width')
 
