@@ -17,7 +17,7 @@ h: hypothesis that maps x => y
 m: training examples
 x: independent variable
 y: dependent variable / label / target value
-co-efficient: theta_0 (intercept), theta_1 (slope)
+co-efficient: theta_0 (intercept, bias), theta_1 (slope, weight)
 Minimize  half the function: h_theta (x_i) - y_i
 avergaed MSE/2: cost function J(theta_0, theta_1):
 0.5 * m * sum(h_theta (x_i) - y_i )^2
@@ -74,19 +74,34 @@ def gradient_descent_regression(x, y):
     theta_1 : temp1
 
     where:
-    d/dtheta_0 J() := 1/m * sum  ( h_theta(x_i) - y_i )        # PD wrt theta_0
-    d/dtheta_1 J() := 1/m * sum (( h_theta(x_i) - y_i ) * x_i) # PD wrt theta_1
+    d/dtheta_0 : = J(0) := 1/m * sum  ( h_theta(x_i) - y_i )        # PD wrt theta_0
+    d/dtheta_1 : = J(1) := 1/m * sum (( h_theta(x_i) - y_i ) * x_i) # PD wrt theta_1
+
+    Play with niters and alpha for best fit
 
     """
 
-    niters    = 100
-    learnrate = 0.001
+    niters    = 2000
+    alpha     = 0.05                     # Learning Rate or Step Size
 
-    m         = y.size
+    m         = x.size
 
-    theta_0   = 0
-    theta_1   = 0
-    cost      = 0
+    theta_0   = 0. ;     theta_1   = 0.  #  Initial Guess
+    J_0       = 0. ;     J_1 = 0.   
+
+
+    for i in range (0,niters):
+
+        h    = theta_0 + theta_1 *  x
+
+        J_0  = np.sum(  h - y      ) / m
+        J_1  = np.sum( (h - y) * x ) / m
+
+        temp0 = theta_0 - alpha * J_0
+        temp1 = theta_1 - alpha * J_1
+
+        theta_0 = temp0
+        theta_1 = temp1
 
     # fit = 'y = ' +  "{:.1f}".format(theta_0) + ' + '  + "{:.1f}".format(theta_1) + ' x'
     # print ( '\nGradient Descent Fit: ' + fit + '\n' )
@@ -144,9 +159,9 @@ labelcolors  = pd.factorize(df.Species)[0]
 
 # Scatter plot of the dataframe
 
-plt.figure( 1 )
-multi = pd.plotting.scatter_matrix(df, c=labelcolors, figsize=(15, 15), marker='o',
-                            hist_kwds={'bins': 20}, s=60, alpha=.8)
+# plt.figure( 1 )
+# multi = pd.plotting.scatter_matrix(df, c=labelcolors, figsize=(15, 15), marker='o',
+#                             hist_kwds={'bins': 20}, s=60, alpha=.8)
 
 
 # fignum = plt.gcf().number + 1
@@ -177,25 +192,29 @@ test_PetalLength  = np.array([1.7, 4.2, 5.4])
 test_PetalWidth   = np.array([0.5, 1.5, 2.1])
 
 # Given Sepal Length predict Petal Width
-print ('Predict with least squares fit: ')
+print ('\nPredict with least squares fit: ')
 predict_PetalWidth_s = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
+
+print ('\nPredict with gradient descent co-efficients: ')
+predict_PetalWidth_g = predict (test_SepalLength, test_PetalWidth, theta_0_g, theta_1_g)
 
 
 fignum = plt.gcf().number + 1
 plt.figure ( fignum ) 
 
-colors = ['gold','brown','orange']
-plt.scatter(xt, yt, c=df.PetalWidthCm, cmap=matplotlib.colors.ListedColormap(colors))
+speciescolors = ['gold','brown','orange']
+plt.scatter(xt, yt, c=df.PetalWidthCm, cmap=matplotlib.colors.ListedColormap(speciescolors))
 # plt.plot(xt, yt , c='k', label='training data', marker='o',ls='')
 
-plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b',     label='train least squares')
-# plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r',     label='train gradient descent')
+plt.plot(xt,abline(xt, theta_0_s, theta_1_s),  c='b', label='train least squares'   , ls='--')
+plt.plot(xt,abline(xt, theta_0_g, theta_1_g),  c='r', label='train gradient descent', ls='--')
 
-plt.plot(test_SepalLength,test_PetalWidth,c='g',           label='test data',             marker='s', ls='--')
-plt.plot(test_SepalLength,predict_PetalWidth_s,c='magenta',label='predict least squares', marker='d', ls='')
+plt.plot(test_SepalLength,test_PetalWidth,     c='g', label='test data',              ls='--', marker='s', markersize=10)
+plt.plot(test_SepalLength,predict_PetalWidth_s,c='c', label='predict least squares',  ls='',   marker='d', markersize=10)
+plt.plot(test_SepalLength,predict_PetalWidth_g,c='m', label='predict least squares',  ls='',   marker='o', markersize=10)
 
-plt.gcf().text(0.15, 0.85, fit_s, fontsize=12, color='b')
-plt.gcf().text(0.15, 0.80, fit_g, fontsize=12, color='r')
+plt.gcf().text(0.15, 0.82, fit_s, fontsize=12, color='b')
+plt.gcf().text(0.15, 0.77, fit_g, fontsize=12, color='r')
 
 plt.legend(loc=4)
 plt.xlabel('Sepal Length')
