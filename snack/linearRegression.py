@@ -42,7 +42,7 @@ def simple_linear_regression(x, y):
     theta_0 = ybar - theta_1 * xbar
 
     """
-    # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
+    # norm = len(xt)-1   # NumPy normalizes variance by N-ddof
     norm = 0
     
     # covar = np.cov(x,y,ddof=norm)
@@ -156,12 +156,15 @@ df       = pd.read_csv(filename,sep=',')
 
 # Map label to integer
 labelcolors  = pd.factorize(df.Species)[0]
+speciescolors = ['goldenrod','brown','orange']
 
 # Scatter plot of the dataframe
 
 # plt.figure( 1 )
-# multi = pd.plotting.scatter_matrix(df, c=labelcolors, figsize=(15, 15), marker='o',
-#                             hist_kwds={'bins': 20}, s=60, alpha=.8)
+multi = pd.plotting.scatter_matrix(df,
+        c=labelcolors, cmap=matplotlib.colors.ListedColormap(speciescolors),
+        figsize=(15, 15), marker='o',
+        hist_kwds={'bins': 20}, s=60, alpha=.8)
 
 
 # fignum = plt.gcf().number + 1
@@ -202,16 +205,16 @@ predict_PetalWidth_g = predict (test_SepalLength, test_PetalWidth, theta_0_g, th
 fignum = plt.gcf().number + 1
 plt.figure ( fignum ) 
 
-speciescolors = ['gold','brown','orange']
 plt.scatter(xt, yt, c=df.PetalWidthCm, cmap=matplotlib.colors.ListedColormap(speciescolors))
 # plt.plot(xt, yt , c='k', label='training data', marker='o',ls='')
 
-plt.plot(xt,abline(xt, theta_0_s, theta_1_s),  c='b', label='train least squares'   , ls='--')
-plt.plot(xt,abline(xt, theta_0_g, theta_1_g),  c='r', label='train gradient descent', ls='--')
+plt.plot(xt,abline(xt, theta_0_s, theta_1_s),  c='b',label='train least squares'   ,  ls='--')
+plt.plot(xt,abline(xt, theta_0_g, theta_1_g),  c='r',label='train gradient descent',  ls='--')
 
-plt.plot(test_SepalLength,test_PetalWidth,     c='g', label='test data',              ls='--', marker='s', markersize=10)
-plt.plot(test_SepalLength,predict_PetalWidth_s,c='c', label='predict least squares',  ls='',   marker='d', markersize=10)
-plt.plot(test_SepalLength,predict_PetalWidth_g,c='m', label='predict least squares',  ls='',   marker='o', markersize=10)
+plt.plot(test_SepalLength,test_PetalWidth,     c='g',label='test data',               ls='--', marker='s', markersize=10)
+plt.plot(test_SepalLength,predict_PetalWidth_s,c='c',label='predict least squares',   ls='',   marker='d', markersize=10)
+plt.plot(test_SepalLength,predict_PetalWidth_g,c='m',label='predict gradient descent',ls='',   marker='o', markersize=10)
+
 
 plt.gcf().text(0.15, 0.82, fit_s, fontsize=12, color='b')
 plt.gcf().text(0.15, 0.77, fit_g, fontsize=12, color='r')
