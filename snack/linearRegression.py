@@ -28,6 +28,7 @@ Goal: minmize J(thet_0, Theta_1)
 
 import numpy as np
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 
 def simple_linear_regression(x, y):
@@ -41,9 +42,9 @@ def simple_linear_regression(x, y):
     # norm = len(xt)-1   # NumPy normalizes variance by N-ddof 
     norm = 0
     
-    covar = np.cov(x,y,ddof=norm)
- 
-    # theta_1 = covar [0,1] / np.var(x,ddof=norm)
+    # covar = np.cov(x,y,ddof=norm)
+    covar   = np.cov(x.astype(float),y.astype(float),ddof=norm)
+
     theta_1 = covar [0,1] / covar[0,0]
     theta_0 = np.mean(y) - ( theta_1 * np.mean(x) )
 
@@ -53,14 +54,33 @@ def simple_linear_regression(x, y):
     return theta_0, theta_1, 0
 
 def gradient_descent_regression(x, y):
+    """
+    Batch Gradient Descent approach to minimize  cost function J
+
+    repeat until convergence
+    theta_j := theta_j - alpha * d/dtheta_j ( J(theta_0, theta_1) )
+    (for j=0 and j=1)
+
+    Corrector: simultaneous update
+    temp0 = theta_0 - alpha d/dtheta_0 J()
+    temp1 = theta_1 - alpha d/dtheta_1 J()
+    theta_0 : temp0
+    theta_1 : temp1
+
+    where:
+    d/dtheta_0 J() := 1/m * sum  ( h_theta(x_i) - y_i )        # PD wrt theta_0
+    d/dtheta_1 J() := 1/m * sum (( h_theta(x_i) - y_i ) * x_i) # PD wrt theta_1
+
+    """
+
     niters    = 100
     learnrate = 0.001
 
-    N = y.size
+    m         = y.size
 
-    theta_0 = 0
-    theta_1 = 0
-    cost    = 0
+    theta_0   = 0
+    theta_1   = 0
+    cost      = 0
 
     return theta_0, theta_1, cost
 
@@ -79,7 +99,7 @@ def predict (xtest, ytest, theta_0, theta_1):
 
     r_squared = SSR / SSTO
 
-    print ( 'SSR / SSTO: ' , r_squared, '1 - SSE / SSTO: ', 1 - SSE / SSTO )
+    print ( 'SSR/SSTO: ' , r_squared, '     1-SSE/SSTO: ', 1 - SSE / SSTO )
      
     RMSE = np.sqrt ( SSE / len(ytest) )
     print ( 'RMSE: ', RMSE )
@@ -87,16 +107,17 @@ def predict (xtest, ytest, theta_0, theta_1):
     return ypredict
 
 def run():
-    filename = '../datasets/UCI/iris/iris.data'
+    filename = '../datasets/kaggle/Iris/input/Iris.csv'
 
     df       = pd.read_csv(filename,sep=',')
 
     # Attribute Information:
-    # 0. sepal length in cm
-    # 1. sepal width in cm
-    # 2. petal length in cm
-    # 3. petal width in cm
-    # 4. class:
+    # 0. row number
+    # 1. sepal length in cm
+    # 2. sepal width in cm
+    # 3. petal length in cm
+    # 4. petal width in cm
+    # 5. class:
     #    0 - Iris Setosa
     #    1 - Iris Versicolour
     #    2 - Iris Virginica
@@ -113,41 +134,41 @@ def run():
     # multi = pd.plotting.scatter_matrix(df, c=df.iloc[:, 4], figsize=(15, 15), marker='o',
     #                            hist_kwds={'bins': 20}, s=60, alpha=.8)
 
-
     dataset = df.values
-
-    xt = dataset[:,0]  # Sepal Length
-    yt = dataset[:,3]  # petal Width
-
+    
+    xt = dataset[:,1]  # Sepal Length
+    yt = dataset[:,4]  # Petal Width
+    
     # Train
-
+    
     theta_0_s, theta_1_s, cost = simple_linear_regression    (xt, yt)
     theta_0_g, theta_1_g, cost = gradient_descent_regression (xt, yt)
-
+    
     # Test
-
+    
     test_SepalLength  = np.array([5.1, 5.9, 6.9])
     test_SepalWidth   = np.array([3.3, 3.0, 3.1])
     test_PetalLength  = np.array([1.7, 4.2, 5.4])
     test_PetalWidth   = np.array([0.5, 1.5, 2.1])
-
+    
     # Given Sepal Length predict Petal Width
     predict_PetalWidth = predict (test_SepalLength, test_PetalWidth, theta_0_s, theta_1_s)
-
-
-    # plt.plot(xt,yt                  ,c='k', label='training data', marker='o',ls='')
-    colors = ['cyan','magenta','yellow']
-    import matplotlib
+    
+    
+    colors = ['gold','brown','orange']
     plt.scatter(xt, yt, c=dataset[:,4], cmap=matplotlib.colors.ListedColormap(colors))
-
-    plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b', label='simple train')
-    plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r', label='least square train')
-
-    plt.plot(test_SepalLength,test_PetalWidth,c='g',         label='test data',     marker='s', ls='--', )
-    plt.plot(test_SepalLength,predict_PetalWidth,c='orange', label='predict simple', marker='d', ls='')
-
+    # plt.plot(xt, yt , c='k', label='training data', marker='o',ls='')
+    
+    plt.plot(xt,abline(xt, theta_0_s, theta_1_s),c='b',     label='train least squares')
+    # plt.plot(xt,abline(xt, theta_0_g, theta_1_g),c='r',     label='train gradient descent')
+    
+    plt.plot(test_SepalLength,test_PetalWidth,c='g',        label='test data',             marker='s', ls='--')
+    plt.plot(test_SepalLength,predict_PetalWidth,c='magenta',label='predict least squares', marker='d', ls='')
+    
     plt.legend(loc=0)
-
+    plt.xlabel('Sepal Length')
+    plt.ylabel('Petal Width')
+    
     plt.show()
 
 if __name__ == '__main__':
