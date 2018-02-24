@@ -90,6 +90,11 @@ def abline (xt, theta_0, theta_1):
     return [theta_0 + theta_1*i for i in xt]
 
 def predict (xtest, ytest, theta_0, theta_1):
+    """
+    Use the train co-efficient to predict test data y
+    Report error measures
+    """
+
     ypredict = abline (xtest, theta_0, theta_1)
 
     # Co-efficient of determination - R-squared
