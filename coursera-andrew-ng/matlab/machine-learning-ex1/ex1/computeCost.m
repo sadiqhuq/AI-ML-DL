@@ -25,6 +25,11 @@ J = 0;
 %% us to treat θ 0 as simply another ‘feature’.
 %% Column 1 of X is always 1, helps in coding vectorized form
 
+% size (theta')
+% size (X')
+% size ((theta'*X')')
+% size (y)
+
 J = sum(((theta' * X')' - y) .^ 2);
 
 
