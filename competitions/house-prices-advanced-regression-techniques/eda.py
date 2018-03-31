@@ -1,17 +1,21 @@
+# # Imports and Options
 import numpy  as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('./input/train.csv')
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
-nrows, ncols = df.shape
 
-print ( 'Number of features:  ', ncols-1 )  # Excluding Id
-print ( 'Number of instances: ', nrows   )  
+# # Read Data
+train = pd.read_csv('./input/train.csv')
 
-features = list(df)
-print('Features: \n', *features, sep='\t')
+# train = train.drop("Id",1) # Remove Id column
 
-# print ( df.head() )
-# print ( df.describe() )
+print('Features: \n', *list(train), sep='\t')
 
+print ( 'Number of features:  ', train.shape[1] )
+print ( 'Number of instances: ', train.shape[0] )
+
+# # Data Check
+# print ( train.head() )
+# print ( train.describe() )
