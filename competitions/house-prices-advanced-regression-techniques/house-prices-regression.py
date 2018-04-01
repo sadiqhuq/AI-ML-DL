@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_absolute_error
+from sklearn import svm
+from sklearn.metrics import mean_absolute_error, make_scorer
 
+ 
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 
@@ -36,6 +38,8 @@ train_num = train_num.fillna(train_num.median())
 train_cat = pd.get_dummies(train_cat)
 
 train = pd.concat([train_num, train_cat], axis = 1)
+
+# #  Seletect Features
 
 # # Use CORR to identify important features
 # 
@@ -76,6 +80,7 @@ test = pd.read_csv('./input/test.csv')
 
 RFG_predicted = RFG_model.predict(val_X[predictors])
 DT_predicted = DT_model.predict(val_X[predictors])
+
 
 print( 'validation MAE RFG: %.4f' % mean_absolute_error(val_y, RFG_predicted) )
 print( 'validation MAE DT:  %.4f' % mean_absolute_error(val_y, DT_predicted)  )
