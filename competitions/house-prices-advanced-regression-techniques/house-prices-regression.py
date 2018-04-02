@@ -74,8 +74,12 @@ predictors =  list(merged) #  Use all features as precictors
 
 # train_X.SalePrice = np.log1p(train.SalePrice)
 
+log_transform = True
+if ( log_transform ):
+   train_SalePrice = np.log1p(train_SalePrice)
+
 train_X, vald_X, train_y, vald_y = train_test_split(train[predictors], 
-                                                  np.log1p(train_SalePrice),
+                                                  train_SalePrice,
                                                   test_size = 0.3,
                                                   random_state = 0)
 
@@ -94,7 +98,7 @@ model_RFG.fit(train_X , train_y)
 
 # # Decission Tree
 
-max_leaf_nodes = 530     # Found by y trial and error
+max_leaf_nodes = 490     # Found by y trial and error
 model_DTR = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes,random_state=0)
 model_DTR.fit(train_X , train_y)
 
@@ -129,13 +133,24 @@ print("Decission Tree   :", rmse_cv(model_DTR, vald_X, predicted_DTR))
 
 # # Apply Model to Test Data
 
-predicted_LRG  = model_RFG.predict(test[predictors])
+predicted_LRG  = model_LRG.predict(test[predictors])
 predicted_RFG  = model_RFG.predict(test[predictors])
 predicted_DTR  = model_DTR.predict(test[predictors])
 
-predicted_y    = np.exp(predicted_RFG)
+if (log_transform):
+   predicted_LRG    = np.exp(predicted_LRG)
+   predicted_RFG    = np.exp(predicted_RFG)
+   predicted_DTR    = np.exp(predicted_DTR)
+
+predicted_y    = predicted_LRG
 
 # Prepare to submit
 
 submit = pd.DataFrame({'Id': test_Id, 'SalePrice': predicted_y})
-submit.to_csv('submission_RFG.csv', index=False)
+submit.to_csv('submission.csv', index=False)
+
+compare = pd.DataFrame({'LRG': predicted_LRG, 
+                        'RFG': predicted_RFG, 
+                        'DTR': predicted_DTR,})
+compare.to_csv('compare.csv', index=False)
+
