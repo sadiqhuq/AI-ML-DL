@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error, make_scorer
@@ -44,7 +45,7 @@ del (train_df, test_df)
 
 # # Data Check
 
-# # Gap Filling
+# # Identify Feature Type
 # # Refer: https://www.kaggle.com/juliencs/a-study-on-regression-applied-to-the-ames-dataset
 feat_cat  = merged_df.select_dtypes(include = ["object"]).columns
 feat_num  = merged_df.select_dtypes(exclude = ["object"]).columns
@@ -52,13 +53,22 @@ feat_num  = merged_df.select_dtypes(exclude = ["object"]).columns
 merged_cat = merged_df[feat_cat]
 merged_num = merged_df[feat_num]
 
-merged_cat = pd.get_dummies(merged_cat)
-merged_num = merged_num.fillna(merged_num.median())
+# # Gap Filling
 
+merged_cat = pd.get_dummies(merged_cat)
+
+# # # Works well with Lasso
+# for j in range(len(feat_cat)):
+#     merged_cat[feat_cat[j]] = merged_cat[feat_cat[j]].astype('category').cat.codes
+    
+merged_num = merged_num.fillna(merged_num.median())
+# merged_num = merged_num.fillna(merged_num.mean())
+
+# # concat feature types
 merged     = pd.concat([merged_num, merged_cat], axis = 1)
 
-print ( '\nCheck datatypes of features: ' )
-print ( merged.columns.to_series().groupby(merged.dtypes).groups )
+# print ( '\nCheck datatypes of features: ' )
+# print ( merged.columns.to_series().groupby(merged.dtypes).groups )
 
 train      = pd.DataFrame(merged[0:ntrain])
 test       = pd.DataFrame(merged[ntrain+1:])
@@ -102,15 +112,21 @@ max_leaf_nodes = 490     # Found by y trial and error
 model_DTR = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes,random_state=0)
 model_DTR.fit(train_X , train_y)
 
+# # Lasso
+model_LAS = Lasso(alpha = 0.000001)
+model_LAS.fit(train_X, train_y)
+
 # # Evaluate Model with Validation Data
 
 predicted_LRG  = model_RFG.predict(vald_X[predictors])
 predicted_RFG  = model_RFG.predict(vald_X[predictors])
 predicted_DTR  = model_DTR.predict(vald_X[predictors])
+predicted_LAS  = model_LAS.predict(vald_X[predictors])
 
 print( '\nvalidation MAE LRG: %.4f' % mean_absolute_error(vald_y, predicted_LRG) )
 print( 'validation MAE RFG: %.4f' % mean_absolute_error(vald_y, predicted_RFG) )
 print( 'validation MAE DTR: %.4f' % mean_absolute_error(vald_y, predicted_DTR)  )
+print( 'validation MAE LAS: %.4f' % mean_absolute_error(vald_y, predicted_LAS)  )
 
 
 # # RMSE
@@ -124,11 +140,13 @@ print("\nRMSE train data")
 print("Linear Regression:", rmse_cv(model_LRG, train_X, train_y))
 print("Random Forest    :", rmse_cv(model_RFG, train_X, train_y))
 print("Decission Tree   :", rmse_cv(model_DTR, train_X, train_y))
+print("Lasso            :", rmse_cv(model_LAS, train_X, train_y))
 
 print("\nRMSE validation data")
 print("Linear Regression:", rmse_cv(model_LRG, vald_X, predicted_LRG))
 print("Random Forest    :", rmse_cv(model_RFG, vald_X, predicted_RFG))
 print("Decission Tree   :", rmse_cv(model_DTR, vald_X, predicted_DTR))
+print("Lasso            :", rmse_cv(model_LAS, vald_X, predicted_LAS))
 
 
 # # Apply Model to Test Data
@@ -136,11 +154,13 @@ print("Decission Tree   :", rmse_cv(model_DTR, vald_X, predicted_DTR))
 predicted_LRG  = model_LRG.predict(test[predictors])
 predicted_RFG  = model_RFG.predict(test[predictors])
 predicted_DTR  = model_DTR.predict(test[predictors])
+predicted_LAS  = model_LAS.predict(test[predictors])
 
 if (log_transform):
    predicted_LRG    = np.exp(predicted_LRG)
    predicted_RFG    = np.exp(predicted_RFG)
    predicted_DTR    = np.exp(predicted_DTR)
+   predicted_LAS    = np.exp(predicted_LAS)
 
 predicted_y    = predicted_LRG
 
@@ -151,6 +171,8 @@ submit.to_csv('submission.csv', index=False)
 
 compare = pd.DataFrame({'LRG': predicted_LRG, 
                         'RFG': predicted_RFG, 
-                        'DTR': predicted_DTR,})
+                        'DTR': predicted_DTR,
+                        'LAS': predicted_LAS
+                        })
 compare.to_csv('compare.csv', index=False)
 
