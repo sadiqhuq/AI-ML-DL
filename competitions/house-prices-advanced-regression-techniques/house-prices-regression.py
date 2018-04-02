@@ -75,8 +75,8 @@ test       = pd.DataFrame(merged[ntrain+1:])
 
 # #  Seletect Features
 
-predictors =  list(merged) #  Use all features as precictors
-# predictors = ['LotArea', 'OverallQual', 'YearBuilt', 'TotRmsAbvGrd']
+# predictors =  list(merged) #  Use all features as precictors
+predictors = ['LotArea', 'OverallQual', 'YearBuilt', 'TotRmsAbvGrd']
 # predictors = ['LotArea']
 
 # # Build Model with all features
