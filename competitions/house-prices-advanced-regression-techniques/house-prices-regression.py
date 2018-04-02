@@ -25,6 +25,8 @@ train_SalePrice = train_df.SalePrice
 
 train_df.drop("SalePrice", axis = 1, inplace = True) # Remove Id column
 
+test_Id = test_df.Id
+
 # train_df.drop("Id", axis = 1, inplace = True) # Remove Id column
 # test_df.drop("Id", axis = 1, inplace = True)
 
@@ -123,3 +125,17 @@ print("\nRMSE validation data")
 print("Linear Regression:", rmse_cv(model_LRG, vald_X, predicted_LRG))
 print("Random Forest    :", rmse_cv(model_RFG, vald_X, predicted_RFG))
 print("Decission Tree   :", rmse_cv(model_DTR, vald_X, predicted_DTR))
+
+
+# # Apply Model to Test Data
+
+predicted_LRG  = model_RFG.predict(test[predictors])
+predicted_RFG  = model_RFG.predict(test[predictors])
+predicted_DTR  = model_DTR.predict(test[predictors])
+
+predicted_y    = np.exp(predicted_RFG)
+
+# Prepare to submit
+
+submit = pd.DataFrame({'Id': test_Id, 'SalePrice': predicted_y})
+submit.to_csv('submission_RFG.csv', index=False)
