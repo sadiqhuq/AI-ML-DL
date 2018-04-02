@@ -55,14 +55,14 @@ merged_num = merged_df[feat_num]
 
 # # Gap Filling
 
-merged_cat = pd.get_dummies(merged_cat)
-
-# # # Works well with Lasso
-# for j in range(len(feat_cat)):
-#     merged_cat[feat_cat[j]] = merged_cat[feat_cat[j]].astype('category').cat.codes
-    
-merged_num = merged_num.fillna(merged_num.median())
-# merged_num = merged_num.fillna(merged_num.mean())
+#merged_cat = pd.get_dummies(merged_cat)
+#
+## # # Works well with Lasso
+## for j in range(len(feat_cat)):
+##     merged_cat[feat_cat[j]] = merged_cat[feat_cat[j]].astype('category').cat.codes
+#    
+#merged_num = merged_num.fillna(merged_num.median())
+## merged_num = merged_num.fillna(merged_num.mean())
 
 # # concat feature types
 merged     = pd.concat([merged_num, merged_cat], axis = 1)
