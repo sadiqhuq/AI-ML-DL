@@ -55,14 +55,14 @@ merged_num = merged_df[feat_num]
 
 # # Gap Filling
 
-#merged_cat = pd.get_dummies(merged_cat)
-#
-## # # Works well with Lasso
-## for j in range(len(feat_cat)):
-##     merged_cat[feat_cat[j]] = merged_cat[feat_cat[j]].astype('category').cat.codes
-#    
-#merged_num = merged_num.fillna(merged_num.median())
-## merged_num = merged_num.fillna(merged_num.mean())
+merged_cat = pd.get_dummies(merged_cat)
+
+# # # Works well with Lasso
+# for j in range(len(feat_cat)):
+#     merged_cat[feat_cat[j]] = merged_cat[feat_cat[j]].astype('category').cat.codes
+    
+merged_num = merged_num.fillna(merged_num.median())
+# merged_num = merged_num.fillna(merged_num.mean())
 
 # # concat feature types
 merged     = pd.concat([merged_num, merged_cat], axis = 1)
@@ -75,8 +75,8 @@ test       = pd.DataFrame(merged[ntrain+1:])
 
 # #  Seletect Features
 
-# predictors =  list(merged) #  Use all features as precictors
-predictors = ['LotArea', 'OverallQual', 'YearBuilt', 'TotRmsAbvGrd']
+predictors =  list(merged) #  Use all features as precictors
+# predictors = ['LotArea', 'OverallQual', 'YearBuilt', 'TotRmsAbvGrd']
 # predictors = ['LotArea']
 
 # # Build Model with all features
@@ -176,7 +176,7 @@ if (log_transform):
    predicted_DTR    = np.exp(predicted_DTR)
    predicted_LAS    = np.exp(predicted_LAS)
 
-predicted_y    = predicted_RFG
+predicted_y    = predicted_DTR
 
 # Prepare to submit
 
