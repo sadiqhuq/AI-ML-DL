@@ -76,9 +76,8 @@ test       = pd.DataFrame(merged[ntrain+1:])
 # #  Seletect Features
 
 predictors =  list(merged) #  Use all features as precictors
+# predictors = ['LotArea', 'OverallQual', 'YearBuilt', 'TotRmsAbvGrd']
 # predictors = ['LotArea']
-# predictors = predictors[6:9]
-# predictors.remove('SalePrice')
 
 # # Build Model with all features
 
@@ -113,41 +112,56 @@ model_DTR = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes,random_state=0)
 model_DTR.fit(train_X , train_y)
 
 # # Lasso
-model_LAS = Lasso(alpha = 0.000001)
+model_LAS = Lasso(alpha=0.999)
 model_LAS.fit(train_X, train_y)
 
 # # Evaluate Model with Validation Data
 
-predicted_LRG  = model_RFG.predict(vald_X[predictors])
+predicted_LRG  = model_LRG.predict(vald_X[predictors])
 predicted_RFG  = model_RFG.predict(vald_X[predictors])
 predicted_DTR  = model_DTR.predict(vald_X[predictors])
 predicted_LAS  = model_LAS.predict(vald_X[predictors])
 
-print( '\nvalidation MAE LRG: %.4f' % mean_absolute_error(vald_y, predicted_LRG) )
-print( 'validation MAE RFG: %.4f' % mean_absolute_error(vald_y, predicted_RFG) )
-print( 'validation MAE DTR: %.4f' % mean_absolute_error(vald_y, predicted_DTR)  )
-print( 'validation MAE LAS: %.4f' % mean_absolute_error(vald_y, predicted_LAS)  )
+print ( '\n' )
+print ( 'val:', np.exp(vald_y.values[0:3]) )
+print ( 'LRG:', np.exp(predicted_LRG[0:3]) )
+print ( 'RFG:', np.exp(predicted_RFG[0:3]) )
+print ( 'DTR:', np.exp(predicted_DTR[0:3]) )
+print ( 'LAS:', np.exp(predicted_LAS[0:3]) )
+
+print ( '\n' )
+print ( 'validation MAE LRG: %.4f' % mean_absolute_error(vald_y, predicted_LRG) )
+print ( 'validation MAE RFG: %.4f' % mean_absolute_error(vald_y, predicted_RFG) )
+print ( 'validation MAE DTR: %.4f' % mean_absolute_error(vald_y, predicted_DTR) )
+print ( 'validation MAE LAS: %.4f' % mean_absolute_error(vald_y, predicted_LAS) )
+
+print ( '\n' )
+print ( 'validation MSE LRG: %.4f' % np.sqrt(mean_squared_error(vald_y, predicted_LRG)) )
+print ( 'validation MSE RFG: %.4f' % np.sqrt(mean_squared_error(vald_y, predicted_RFG)) )
+print ( 'validation MSE DTR: %.4f' % np.sqrt(mean_squared_error(vald_y, predicted_DTR)) )
+print ( 'validation MSE LAS: %.4f' % np.sqrt(mean_squared_error(vald_y, predicted_LAS)) )
 
 
-# # RMSE
+# # # RMSE
 
 def rmse_cv(model,X,y):
     scorer = make_scorer(mean_squared_error, greater_is_better = False)
     rmse= np.sqrt(-cross_val_score(model, X, y, scoring = scorer, cv = 4,n_jobs=2))
     return(rmse.mean())
     
-print("\nRMSE train data")
-print("Linear Regression:", rmse_cv(model_LRG, train_X, train_y))
-print("Random Forest    :", rmse_cv(model_RFG, train_X, train_y))
-print("Decission Tree   :", rmse_cv(model_DTR, train_X, train_y))
-print("Lasso            :", rmse_cv(model_LAS, train_X, train_y))
+# print ( '\n' )
+# print ("RMSE train data")
+# print ("Linear Regression:", rmse_cv(model_LRG, train_X, train_y))
+# print ("Random Forest    :", rmse_cv(model_RFG, train_X, train_y))
+# print ("Decission Tree   :", rmse_cv(model_DTR, train_X, train_y))
+# print ("Lasso            :", rmse_cv(model_LAS, train_X, train_y))
 
-print("\nRMSE validation data")
-print("Linear Regression:", rmse_cv(model_LRG, vald_X, predicted_LRG))
-print("Random Forest    :", rmse_cv(model_RFG, vald_X, predicted_RFG))
-print("Decission Tree   :", rmse_cv(model_DTR, vald_X, predicted_DTR))
-print("Lasso            :", rmse_cv(model_LAS, vald_X, predicted_LAS))
-
+print ( '\n' )
+print ("RMSE validation data")
+print ("Linear Regression:", rmse_cv(model_LRG, vald_X, vald_y))
+print ("Random Forest    :", rmse_cv(model_RFG, vald_X, vald_y))
+print ("Decission Tree   :", rmse_cv(model_DTR, vald_X, vald_y))
+print ("Lasso            :", rmse_cv(model_LAS, vald_X, vald_y))
 
 # # Apply Model to Test Data
 
@@ -162,7 +176,7 @@ if (log_transform):
    predicted_DTR    = np.exp(predicted_DTR)
    predicted_LAS    = np.exp(predicted_LAS)
 
-predicted_y    = predicted_LRG
+predicted_y    = predicted_RFG
 
 # Prepare to submit
 
