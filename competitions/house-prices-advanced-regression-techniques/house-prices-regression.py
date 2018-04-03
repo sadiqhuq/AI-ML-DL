@@ -87,6 +87,10 @@ log_transform = True
 if ( log_transform ):
    train_SalePrice = np.log1p(train_SalePrice)
 
+# # Save Feature Engineered Table
+feature_csv = pd.concat([train, train_SalePrice], axis = 1)
+feature_csv.to_csv('feature_eng.csv', index=False)
+
 train_X, vald_X, train_y, vald_y = train_test_split(train[predictors], 
                                                   train_SalePrice,
                                                   test_size = 0.3,
